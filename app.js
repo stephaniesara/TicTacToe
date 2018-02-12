@@ -3,6 +3,7 @@
 // 	document.getElementById("")
 // })
 
+
 // MODEL
 
 var initBoard = (size) => {
@@ -13,24 +14,39 @@ var initBoard = (size) => {
 	return board;
 }
 
-const size = 3;
-var board = initBoard(size); // global variable for board
 
 
 // CONTROLLER
 
-document.addEventListener("DOMContentLoaded", (event) => {
-	// console.log("DOM loaded!");
-	document.getElementById("A").addEventListener("click", function() {
-		callback("A");
-	});
-	document.getElementById("B").addEventListener("click", function() {
-		callback("B");
-	});
-});
+var setupListeners = () => {
+	var td;
+	for (var row = 0; row < size; row++) {
+		for (var col = 0; col < size; col++) {
+			var id = '' + row + col;
+			td = document.getElementById(id);
+			(function (td) {
+				td.addEventListener('click', function() {
+					handleClick(Number(td.id.charAt(0)), Number(td.id.charAt(1)));
+				})
+			})(td)
+		}
+	}
+};
 
-// VIEW
+var handleClick = (row, col) => {
+	console.log(row, col);
+	console.log(typeof(row))
+};
 
-var callback = (str) => {
-	console.log(str);
+
+// GLOBALS
+
+const size = 3;
+var board; // global variable for board
+
+var init = () => {
+	board = initBoard(size);
+	setupListeners();
 }
+
+init();
