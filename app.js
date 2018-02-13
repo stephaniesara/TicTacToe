@@ -5,20 +5,16 @@ var toggleSquareModel = (row, col) => {
 };
 
 var hasTie = () => {
-	var isFull = true;
-	game.board.forEach((row) => {
-		row.forEach((square) => {
-			if (square === null) {
-				isFull = false;
-			}
+	return !game.board.some((row) => {
+		return row.some((square) => {
+			return square === null;
 		});
 	});
-	return isFull;
 };
 
 var isRowFull = (row) => {
-	return game.board[row].every((square) => {
-		return square === game.player;
+	return !game.board[row].some((square) => {
+		return square !== game.player;
 	});
 };
 
@@ -60,15 +56,11 @@ var hasWinner = (row, col) => {
 var isGameOver = (row, col) => {
 	if (hasWinner(row, col)) {
 		game.previousWinner = game.symbols[game.player];
-		updateMessageView('Game over! The winner is ' + game.symbols[game.player] + '!');
-		return true;
+		return 'Game over! The winner is ' + game.symbols[game.player] + '!';
 	} else if (hasTie()) {
-		updateMessageView('Game over! Both players have tied.');
-		return true;
-	} else {
-		updateMessageView('Next up: ' + game.symbols[!game.player]);
-		return false; // continue game.playing
+		return 'Game over! Both players have tied.';
 	}
+	return null;
 };
 
 // CONTROLLER
@@ -78,12 +70,15 @@ var handleGridClick = (event) => {
 	var row = Number(id.charAt(0));
 	var col = Number(id.charAt(1));
 	if (game.playing && game.board[row][col] === null) {
-		toggleSquareView(document.getElementById(id));
+		toggleSquareView(id);
 		toggleSquareModel(row, col);
-		if (isGameOver(row, col)) {
-			game.playing = false; // end game
+		var gameOverMessage = isGameOver(row, col);
+		if (gameOverMessage === null) {
+			updateMessageView('Next up: ' + game.symbols[!game.player]);
+			game.player = !game.player;
 		} else {
-			game.player = !game.player; // switch turns
+			updateMessageView(gameOverMessage);
+			game.playing = false;
 		}
 	}
 };
@@ -94,15 +89,14 @@ var updateMessageView = (message) => {
 	document.getElementById('message').innerHTML = message;
 };
 
-
-var toggleSquareView = (elem) => {
-	var tile = game.symbols[game.player];
-	elem.innerHTML = tile;
+var toggleSquareView = (id) => {
+	var elem = document.getElementById(id);
+	elem.innerHTML = game.symbols[game.player];
 };
 
 var clearBoardView = () => {
-	var squares = Array.prototype.slice.call(document.getElementsByClassName('square'));
-	squares.forEach((square) => {
+	var squaresArr = Array.prototype.slice.call(document.getElementsByClassName('square'));
+	squaresArr.forEach((square) => {
 		square.innerHTML = '';
 	});
 };
@@ -112,13 +106,13 @@ var clearBoardView = () => {
 var game = {
 	board: {},
 	size: 3,
-	player: true,
-	playing: true,
+	player: true, // 'X'
+	playing: true, // game in progress
 	symbols: {
 		true: 'X',
 		false: 'O'
 	},
-	previousWinner: false,
+	previousWinner: false, // no previous winner
 	initBoard: (size) => {
 		var board = [];
 		for (var i = 0; i < game.size; i++) {
@@ -130,16 +124,17 @@ var game = {
 
 var init = () => {
 	clearBoardView();
-	var message = 'Let\'s tic tac toe! First player is ' + (game.previousWinner || 'X');
-	updateMessageView(message);
+	updateMessageView('Let\'s tic tac toe! First player is ' + (game.previousWinner || 'X'));
 	game.board = game.initBoard(game.size);
-	game.player = true; // for game.player X
+	game.player = game.previousWinner ? (game.previousWinner === 'X' ? true : false) : true;
 	game.playing = true;
 }
 
 var setupListeners = () => {
-	var grid = document.getElementById('grid');
-	grid.addEventListener('click', (event) => handleGridClick(event));
+	var squaresArr = Array.prototype.slice.call(document.getElementsByClassName('square'));
+	squaresArr.forEach((square) => {
+		square.addEventListener('click', (event) => handleGridClick(event));
+	});
 };
 
 setupListeners();
