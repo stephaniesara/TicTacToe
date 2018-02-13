@@ -4,26 +4,30 @@
 <head>
 	<title>Tic Tac Toe yuuup!</title>
 	<style type="text/css">
-	#grid {
-		width: 90px;
-		width: 90px;
-	}
 	.row {
 		display: flex;
 	}
 	.square {
-		width: 30px;
-		height: 30px;
+		width: 50px;
+		height: 50px;
 		text-align: center;
 		vertical-align: middle;
-		line-height: 30px; /* centers the text inside square*/
+		line-height: 50px; /* centers the text inside square*/
 		border: 1px solid grey;
+	}
+	#message {
+		margin-top: 10px;
+		margin-bottom: 10px;
+		font-size: 20px;
+	}
+	#restart {
+		margin-top: 10px;
 	}
 </style>
 </head>
 
 <body>
-	<h3>It's time for...tic tac toe!</h3>
+	<div id="message">Let's tic tac toe! First player is X</div>
 	
 	<div id="grid">
 		<div class="row">
@@ -42,6 +46,9 @@
 			<div class="square" id="22"></div>
 		</div>
 	</div>
+
+	<!-- <div id="message">First up! X</div> -->
+	<button type="button" id=restart onclick="newGame()">New game</button>
 
 		<script src="./app.js"></script>
 
