@@ -7,27 +7,32 @@
 </head>
 
 <body>
-	<div id="message"></div>
-	
-	<div id="grid">
-		<div class="row">
-			<div class="square" id="00"></div>
-			<div class="square" id="01"></div>
-			<div class="square" id="02"></div>
+	<div id="game">
+		<div id="message">
+			<div id="instructions">
+			</div>
 		</div>
-		<div class="row">
-			<div class="square" id="10"></div>
-			<div class="square" id="11"></div>
-			<div class="square" id="12"></div>
+		
+		<div id="grid">
+			<div class="row">
+				<div class="square" id="00"></div>
+				<div class="square" id="01"></div>
+				<div class="square" id="02"></div>
+			</div>
+			<div class="row">
+				<div class="square" id="10"></div>
+				<div class="square" id="11"></div>
+				<div class="square" id="12"></div>
+			</div>
+			<div class="row">
+				<div class="square" id="20"></div>
+				<div class="square" id="21"></div>
+				<div class="square" id="22"></div>
+			</div>
 		</div>
-		<div class="row">
-			<div class="square" id="20"></div>
-			<div class="square" id="21"></div>
-			<div class="square" id="22"></div>
-		</div>
+		<button type="button" id="restart" onclick="init()">New game</button>
 	</div>
 
-	<button type="button" id="restart" onclick="init()">New game</button>
 	<script src="./app.js"></script>
 
 </body>

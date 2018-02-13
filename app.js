@@ -35,20 +35,22 @@ var isMajorDiagFull = (row, col) => {
 	if (row + col !== 2) {
 		return false;
 	}
-	if (game.board[0][2] !== game.player || game.board[1][1] !== game.player || game.board[2][0] !== game.player) {
-		return false;
-	}
-	return true;
+	var pairs = [ [0, 2], [1, 1], [2, 0] ];
+	var bool = pairs.reduce( (accum, curr) => {
+		return accum && (game.board[curr[0]][curr[1]] === game.player);
+	}, true);
+	return bool;
 };
 
 var isMinorDiagFull = (row, col) => {
 	if (row !== col) {
 		return false;
 	}
-	if (game.board[0][0] !== game.player || game.board[1][1] !== game.player || game.board[2][2] !== game.player) {
-		return false;
-	}
-	return true;
+	var pairs = [ [0, 0], [1, 1], [2, 2]];
+	var bool = pairs.reduce( (accum, curr) => {
+		return accum && (game.board[curr[0]][curr[1]] === game.player);
+	}, true);
+	return bool;
 };
 
 var hasWinner = (row, col) => {
@@ -99,7 +101,7 @@ var toggleSquareView = (elem) => {
 };
 
 var clearBoardView = () => {
-	squares = Array.prototype.slice.call(document.getElementsByClassName('square'));
+	var squares = Array.prototype.slice.call(document.getElementsByClassName('square'));
 	squares.forEach((square) => {
 		square.innerHTML = '';
 	});
