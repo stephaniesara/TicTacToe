@@ -61,7 +61,6 @@ var isGameOver = (row, col) => {
 		updateMessageView('Game over! The winner is ' + game.symbols[game.player] + '!');
 		return true;
 	} else if (hasTie()) {
-		game.previousWinner = true;
 		updateMessageView('Game over! Both players have tied.');
 		return true;
 	} else {
@@ -128,10 +127,9 @@ var game = {
 }
 
 var init = () => {
-	if (game.previousWinner) {
-		clearBoardView();
-	}
-	updateMessageView('Let\'s tic tac toe! First player is X');
+	clearBoardView();
+	var message = 'Let\'s tic tac toe! First player is ' + (game.previousWinner || 'X');
+	updateMessageView(message);
 	game.board = game.initBoard(game.size);
 	game.player = true; // for game.player X
 	game.playing = true;
