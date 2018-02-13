@@ -1,26 +1,12 @@
-// var grid = document.getElementById('#grid');
-// grid.addEventListener("click", funciont() {
-// 	document.getElementById("")
-// })
-
-
 // MODEL
 
-var initBoard = (size) => {
-	var board = [];
-	for (var i = 0; i < size; i++) {
-		board[i] = new Array(size).fill(null);
-	}
-	return board;
-}
-
 var toggleSquareModel = (row, col) => {
-	board[row][col] = player;
+	game.board[row][col] = game.player;
 };
 
 var hasTie = () => {
 	var isFull = true;
-	board.forEach((row) => {
+	game.board.forEach((row) => {
 		row.forEach((square) => {
 			if (square === null) {
 				isFull = false;
@@ -31,14 +17,14 @@ var hasTie = () => {
 };
 
 var isRowFull = (row) => {
-	return board[row].every((square) => {
-		return square === player;
+	return game.board[row].every((square) => {
+		return square === game.player;
 	});
 };
 
 var isColFull = (col) => {
-	for (var i = 0; i < size; i++) {
-		if (board[i][col] !== player) {
+	for (var i = 0; i < game.size; i++) {
+		if (game.board[i][col] !== game.player) {
 			return false;
 		}
 	}
@@ -49,7 +35,7 @@ var isMajorDiagFull = (row, col) => {
 	if (row + col !== 2) {
 		return false;
 	}
-	if (board[0][2] !== player || board[1][1] !== player || board[2][0] !== player) {
+	if (game.board[0][2] !== game.player || game.board[1][1] !== game.player || game.board[2][0] !== game.player) {
 		return false;
 	}
 	return true;
@@ -59,7 +45,7 @@ var isMinorDiagFull = (row, col) => {
 	if (row !== col) {
 		return false;
 	}
-	if (board[0][0] !== player || board[1][1] !== player || board[2][2] !== player) {
+	if (game.board[0][0] !== game.player || game.board[1][1] !== game.player || game.board[2][2] !== game.player) {
 		return false;
 	}
 	return true;
@@ -71,49 +57,31 @@ var hasWinner = (row, col) => {
 
 var isGameOver = (row, col) => {
 	if (hasWinner(row, col)) {
-		updateMessageView('Game over! The winner is ' + symbols[player] + '!');
+		updateMessageView('Game over! The winner is ' + game.symbols[game.player] + '!');
 		return true;
 	} else if (hasTie()) {
 		updateMessageView('Game over! Both players have tied.');
 		return true;
 	} else {
-		updateMessageView('Next up: ' + symbols[!player]);
-		return false; // continue playing
+		updateMessageView('Next up: ' + game.symbols[!game.player]);
+		return false; // continue game.playing
 	}
 };
 
 // CONTROLLER
 
-
-// should refactor this to include listeners directly in html dom elements
-var setupListeners = () => {
-	var td;
-	for (var row = 0; row < size; row++) {
-		for (var col = 0; col < size; col++) {
-			var id = '' + row + col;
-			td = document.getElementById(id);
-			(function (td) {
-				td.addEventListener('click', function() {
-					var row = Number(td.id.charAt(0));
-					var col = Number(td.id.charAt(1));
-					if (playing && board[row][col] === null) {
-						handleClick(td, row, col);
-					}
-				})
-			})(td)
+var handleGridClick = (event) => {
+	var id = event.target.id;
+	var row = Number(id.charAt(0));
+	var col = Number(id.charAt(1));
+	if (game.playing && game.board[row][col] === null) {
+		toggleSquareView(document.getElementById(id));
+		toggleSquareModel(row, col);
+		if (isGameOver(row, col)) {
+			game.playing = false; // end game
+		} else {
+			game.player = !game.player; // switch turns
 		}
-	}
-};
-
-var handleClick = (elem, row, col) => {
-	toggleSquareView(elem);
-	toggleSquareModel(row, col);
-	if (isGameOver(row, col)) {
-		console.log('game over!');
-		playing = false; // end game
-	} else {
-		console.log('keep playing!');
-		player = !player; // switch turns
 	}
 };
 
@@ -125,7 +93,7 @@ var updateMessageView = (message) => {
 
 
 var toggleSquareView = (elem) => {
-	var tile = symbols[player];
+	var tile = game.symbols[game.player];
 	elem.innerHTML = tile;
 };
 
@@ -136,28 +104,39 @@ var clearBoardView = () => {
 	});
 };
 
-// GLOBALS
+// GLOBALS and INIT
 
-var player; 
-var playing; // true while game is not over
-var symbols = {
-	true: 'X',
-	false: 'O'
+var game = {
+	board: {},
+	size: 3,
+	player: true,
+	playing: true,
+	symbols: {
+		true: 'X',
+		false: 'O'
+	}
 }
-const size = 3;
-var board; // global variable for board
 
-var newGame = () => {
-	updateMessageView('Let\'s tic tac toe! First player is X');
-	clearBoardView();
-	init();
-};
+var initBoard = (size) => {
+	var board = [];
+	for (var i = 0; i < game.size; i++) {
+		board[i] = new Array(game.size).fill(null);
+	}
+	return board;
+}
 
 var init = () => {
-	board = initBoard(size);
-	player = true; // for player X
-	playing = true;
+	updateMessageView('Let\'s tic tac toe! First player is X');
+	clearBoardView();
+	game.board = initBoard(game.size);
+	game.player = true; // for game.player X
+	game.playing = true;
 }
+
+var setupListeners = () => {
+	var grid = document.getElementById('grid');
+	grid.addEventListener('click', (event) => handleGridClick(event));
+};
 
 setupListeners();
 init();

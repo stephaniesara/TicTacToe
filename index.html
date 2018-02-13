@@ -4,6 +4,10 @@
 <head>
 	<title>Tic Tac Toe yuuup!</title>
 	<style type="text/css">
+	#grid {
+		max-width: 156px;
+		max-height: 156px;
+	}
 	.row {
 		display: flex;
 	}
@@ -27,7 +31,7 @@
 </head>
 
 <body>
-	<div id="message">Let's tic tac toe! First player is X</div>
+	<div id="message"></div>
 	
 	<div id="grid">
 		<div class="row">
@@ -48,7 +52,7 @@
 	</div>
 
 	<!-- <div id="message">First up! X</div> -->
-	<button type="button" id=restart onclick="newGame()">New game</button>
+	<button type="button" id=restart onclick="init()">New game</button>
 
 		<script src="./app.js"></script>
 
